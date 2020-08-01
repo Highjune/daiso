@@ -1,0 +1,309 @@
+<!doctype html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<meta charset="utf-8" />
+
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script
+	src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<style>
+<
+style>h3 {
+	font-weight: bold;
+	text-align: center;
+}
+
+.form-control {
+	box-shadow: none;
+	font-weight: normal;
+	font-size: 13px;
+}
+
+.form-control:focus {
+	border-color: #33cabb;
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-control, .btn {
+	min-height: 38px;
+	border-radius: 2px;
+}
+
+html, body {
+	height: 100%;
+	margin: 0;
+}
+
+.container {
+	min-height: 72%;
+}
+
+.contract-tbl {
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+.contract-tbl th, .contract-tbl td {
+	border: 1px solid #e0e0e0;
+	text-align: center;
+}
+
+.contract-tbl th {
+	background: #fcfcfc;
+}
+
+.contract-tbl th div {
+	height: 41px;
+	line-height: 43px;
+}
+
+.contract-tbl tbody th {
+	font-weight: normal;
+}
+</style>
+<script>
+	$(function() {
+		//$("#terms_form").attr("action", "main.html");
+		//var m_userid = location.search.split("=")[1];
+		//$("#m_userid").val(m_userid);
+		$("#nextBtn").click(function() {
+			if ($("#check_3").is(":checked") == false) {
+				alert("모든 약관에 동의 하셔야 다음 단계로 진행 가능합니다.");
+				return;
+			} else if ($("#check_2").is(":checked") == false) {
+				alert("모든 약관에 동의 하셔야 다음 단계로 진행 가능합니다..");
+				return;
+			}
+
+		});
+
+		$("#allCheck").click(function() {
+			if ($("#allCheck").prop("checked")) {
+				$("input[type=checkbox]").prop("checked", true)
+			} else {
+				$("input[type=checkbox]").prop("checked", false);
+			}
+		});
+
+	});
+</script>
+</head>
+
+<body class="bg-light">
+	<form id="logout" action="/logout" method="POST">
+		<input type="hidden" th:name="${_csrf.parameterName}"
+			th:value="${_csrf.token}" />
+	</form>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+		<div class="container">
+			<a class="navbar-brand" href="/">DAISO Review</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarResponsive" aria-controls="navbarResponsive"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<!-- <div class="collapse navbar-collapse" id="navbarResponsive">
+         <ul class="navbar-nav ml-auto">
+           <li class="nav-item active">
+            <a class="nav-link" href="#">Home
+              <span class="sr-only">(current)</span>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="#">Login</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="#">Register</a>
+           </li>
+           
+         </ul>
+        </div> -->
+		</div>
+	</nav>
+
+
+
+	</ul>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8"
+				style="background-color: white; float: none; margin: 0 auto">
+				<div class="col-md-12 order-md-1">
+
+					<form role="form" th:action="@{/register}" method="post"
+						class="needs-validation was-validated" autocomplete="off">
+
+						<br /> <br /> <br />
+						<h4 style="text-align: center" class="mb-3 ">회원 가입</h4>
+
+						<br />
+
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<label for="m_userid">아이디</label> <input type="text"
+									class="form-control" id="m_userid" value="" name="m_userid"
+									required>
+								<div class="invalid-feedback">아이디는 필수입니다.</div>
+							</div>
+							<div class="col-md-6 mb-3">
+								<label for="m_password">패스워드</label> <input type="password"
+									class="form-control" id="m_password" placeholder="" value=""
+									name="m_password" required>
+								<div class="invalid-feedback">패스워드는 필수입니다.</div>
+							</div>
+						</div>
+
+
+						<div class="mb-3">
+							<label for="m_email">Email <span class="text-muted"></span></label>
+							<input type="email" class="form-control" id="m_email" value=""
+								name="m_email">
+							<div class="invalid-feedback">유효한 이메일을 입력해주세요</div>
+						</div>
+
+
+						<div class="mb-3">
+							<label for="m_nickname">이름(닉네임)</label> <input type="text"
+								class="form-control" id="m_nickname" placeholder="" value=""
+								name="m_nickname" required>
+							<div class="invalid-feedback">이름은 필수입니다.</div>
+						</div>
+						<div>
+
+							<label for="role"></label> <input type="hidden"
+								class="form-control" id="role" placeholder="" name="role"
+								value="">
+
+						</div>
+
+
+						<input type="hidden" name="data_privacy_agree" value="">
+						<hr class="mb-4">
+						<div id="chkwrap">
+							<div class="allCheck">
+								<label><input type="checkbox" name="every_agree"
+									id="allCheck" value="all" class="input-cbox new_every_agree">
+									전체동의</label> <input type="hidden" name="allnew_agree" id="allCheck"
+									value="Y">
+
+								<div class="cont p10">
+									<ul style="list-style: none">
+
+										<li class="ml-30 pt-10"><label><input
+												type="checkbox" name="privacy1" id="check_2"
+												value="agree_uidB" class="input-cbox every_agree">
+												개인정보 수집 및 이용 안내</label> <a href="#chk_cont2"><button
+													class="btn btn-outline-primary btn-sm">내용보기</button></a></li>
+										<li style="padding-bottom: 5px; color: #0549bb;"><label>
+												<input type="checkbox" id="check_3" name="user_age_check"
+												value="Y"> 14세 이상입니다.(필수)
+										</label></li>
+										<li>* 회원가입에 필요한 최소한의 정보만 입력 받음으로써 고객님의 개인정보 수집을 최소화하고</li>
+										<li>&nbsp;&nbsp;&nbsp;편리한 회원가입을 제공합니다.</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<hr class="mb-4">
+
+
+						<br />
+						<div class="row text-center" style="width: 100%">
+							<div style="width: 50%; float: none; margin: 0 auto">
+								<button id="nextBtn" type="submit"
+									class="btn-success btn-lg btn-block">가입하기</button>
+							</div>
+						</div>
+
+
+						<input type="hidden" th:name="${_csrf.parameterName}"
+							th:value="${_csrf.token}" />
+					</form>
+
+				</div>
+
+				<br />
+				<hr class="mb-4">
+				<h4 class="tit" id="chk_cont2">개인정보 수집·이용</h4>
+				<table border="" summary="구분, 목적, 항목, 보유기간, 필수정보"
+					class="contract-tbl">
+					<caption></caption>
+					<colgroup>
+						<col width="80">
+						<col width="33%">
+						<col width="33%">
+						<col width="33%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">
+								<div>구분</div>
+							</th>
+							<th scope="col">
+								<div>목적</div>
+							</th>
+							<th scope="col">
+								<div>항목</div>
+							</th>
+							<th scope="col">
+								<div>보유기간</div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="row" rowspan="1">
+								<div></div>
+							</th>
+							<td>
+								<div class="p10 purposeY">회원제 서비스 이용 / 본인확인</div>
+							</td>
+							<td>
+								<div class="p10 itemsY">이름, 아이디, 비밀번호, 이메일, 휴대폰, 생일</div>
+							</td>
+							<td>
+								<div class="p10 holdingY">회원탈퇴 후 5일까지</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<hr class="mb-4">
+			</div>
+
+
+
+		</div>
+	</div>
+	</div>
+	<br />
+	<!-- Footer -->
+	<footer class="py-5 bg-dark">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your
+				Website 2020</p>
+		</div>
+		<!-- /.container -->
+	</footer>
+
+</body>
+
+</html>

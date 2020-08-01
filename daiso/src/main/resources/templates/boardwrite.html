@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns:th=" http://www.thymeleaf.org">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+
+
+<!-- <b_title>Shop Item - Start Bootstrap Template</b_title> -->
+
+
+<!-- Bootstrap core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link href="css/shop-item.css" rel="stylesheet">
+
+<style>
+.file-input {
+	position: relative
+}
+
+.file-input .file-name {
+	position: relative;
+	height: 44px;
+	padding: 5px 40px 5px 50px;
+	margin-right: 110px;
+	border: 1px solid #d6d6d6;
+	background: #ffffff
+}
+
+.file-input .file-name:before {
+	content: '';
+	position: absolute;
+	top: 14px;
+	left: 20px;
+	width: 15px;
+	height: 15px;
+	background: url(/images/common/spr-common.png) -220px -110px no-repeat
+}
+
+.file-input .file-name span {
+	display: block;
+	font-size: 14px;
+	color: #888;
+	line-height: 34px;
+	word-wrap: normal;
+	overflow: hidden
+}
+
+.file-input .file-name .name-remove {
+	display: block;
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 40px;
+	height: 44px;
+	background: url(/images/common/spr-common.png) -200px -300px no-repeat
+}
+
+.file-input .file-btn {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 110px;
+	height: 44px
+}
+
+.file-input .file-btn>span {
+	display: block;
+	width: 100%;
+	height: 100%;
+	font-size: 14px;
+	color: #fff;
+	line-height: 44px;
+	text-align: center;
+	background: #888
+}
+
+.file-input .file-btn>input[type=file] {
+	display: block !important;
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+	cursor: pointer
+}
+
+button {
+	border: 0;
+	background: 0 0;
+}
+
+#btn {
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	margin-left: -3px;
+}
+
+#btnf {
+	float: right;
+	border-radius: 10px;
+	text-align: center;
+	width: 100px;
+	border: 1px solid skyblue;
+	background-color: skyblue;
+	color: skyblue;
+	padding: 5px;
+}
+
+.border-styles>ul {
+	border: 0;
+	width: 900px;
+	margin: 2px 0;
+	padding: 1px 3px;
+	/* border-width: 2px; */
+	border-color: #aaa;
+	border-top: 1px;
+	/* border-bottom: 1px; */
+	border-style: solid;
+	list-style-type: none;
+}
+
+.border-styles>ul>li>* {
+	width: 100%;
+}
+
+.border-styles>ul>li {
+	border: 0;
+}
+
+.border-styles>.b_title {
+	border-top-color: blue;
+}
+
+.border-styles>.sub {
+	text-align: right;
+}
+
+.placeholder, input[type=text], input[type=password], input[type=number],
+	textarea {
+	width: 100%;
+	min-height: 44px;
+	padding: 10px 20px;
+	border: 1px solid #d8d8d8;
+	font-family: notoD, Roboto, notoD-etc, sans-serif;
+	font-size: 14px;
+	color: #666;
+	line-height: 22px;
+	vertical-align: top
+}
+</style>
+<script src="js/jquery-3.5.0.min.js"></script>
+<script>
+	$(function() {
+		$("#nextBtn").bind("click", function() {
+			if (!$("#b_title").val()) {
+				alert("제목이 빠졌습니다.");
+				$("#b_title").focus();
+				return false;
+			}
+			if (!$("#b_writing").val()) {
+				alert("내용이 빠졌습니다.");
+				$("#b_writing").focus();
+				return false;
+			}
+
+			$.ajax({
+				url : '/board',
+				type : 'POST',
+				dataType : 'json',
+				contentType : 'application/json;charset=utf-8',
+				data : JSON.stringify({
+					'm_userid' : $('#m_userid').text(),
+					'b_title' : $('#b_title').val(),
+					'b_writing' : $('#b_writing').val(),
+					'p_productid' : $('#p_productid').val()
+				}),
+				success : function(data) {
+					alert(data.code); //success
+					location.href = "/board";
+				}
+			});
+		});
+	});
+</script>
+</head>
+
+<body>
+
+	<form id="logout" action="/logout" method="POST">
+		<input type="hidden" th:name="${_csrf.parameterName}"
+			th:value="${_csrf.token}" />
+	</form>
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+		<div class="container">
+			<a class="navbar-brand" href="/">Daiso Review Homepage</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarResponsive" aria-controls="navbarResponsive"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item active"><a class="nav-link" href="/">Home
+							<span class="sr-only">(current)</span>
+					</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{board}">Board</a>
+					</li>
+					<!-- <li class="nav-item"><a class="nav-link"
+						sec:authorize="isAnonymous()" th:href="@{login}">Login</a></li>
+					<li class="nav-item"><a class="nav-link"
+						sec:authorize="isAuthenticated()" th:href="@{logout}">Logout</a></li>
+					<li class="nav-item"><a class="nav-link"
+						sec:authorize="isAnonymous()" th:href="@{register}">Register</a></li> -->
+					<!-- <li class="nav-item" sec:authorize="hasRole('ROLE_USER')"><a
+						class="nav-link" th:href="@{/board}">게시판</a></li> -->
+					<li class="nav-item" sec:authorize="!isAuthenticated()"><a
+						class="nav-link" th:href="@{/register}">회원가입</a></li>
+					<!-- 로그인이 되지 않은 경우 표시 -->
+					<li class="nav-item" sec:authorize="isAuthenticated()"><span
+						style="color: white; font-weight: bold display:inline-block; margin: 10px; padding: 5px"
+						sec:authentication="principal.username"></span></li>
+					<!-- 로그인 된 경우의 m_userid을 출력 -->
+					<!-- <li class="nav-item"> <a class="nav-link " th:href="@{'/register/'+ ${#authentication.principal.m_userid}}">마이페이지</a> </li> -->
+					<li sec:authorize="isAuthenticated()" class="nav-item"><a
+						class="nav-link"
+						onclick="document.getElementById('logout').submit();">Logout</a></li>
+			</div>
+	</nav>
+
+	<!-- Page Content -->
+	<div class="container">
+
+		<div class="row">
+
+			<div class="col-lg-3">
+				<h1 class="my-4">Shop Name</h1>
+				<div class="list-group">
+					<a href="#" class="list-group-item active">Category 1</a> <a
+						href="#" class="list-group-item">Category 2</a> <a href="#"
+						class="list-group-item">Category 3</a>
+				</div>
+			</div>
+			<!-- /.col-lg-3 -->
+
+			<div class="col-lg-9">
+				<br /> <br />
+				<div class="card-body">
+					<body>
+
+						<!--  <form  role="form" th:action="@{/board}" method="post"  autocomplete="off"> -->
+						<label for="select">Review Item</label>
+						<br />
+						<select name="p_productid" id="p_productid" class="p_productid"
+							style="width: 170px;">
+							<!-- 추가할 아이템들 넣기 -->
+							<option value="1" data-image='images/clip_2500.jpg'>북스탠드</option>
+							<option value="2">컵</option>
+
+						</select>
+						<br />
+						<!-- <label for="m_userid">아이디</label> -->
+						<div id="m_userid" name="m_userid"
+							sec:authentication="principal.username"
+							style="color: black; font-weight: bold display:inline-block; margin: 10px; padding: 5px"></div>
+
+						<label for="b_title">제목</label>
+						<input type="text" class="form-control" name="b_title"
+							id="b_title" placeholder="제목을 입력해 주세요" />
+						<label for="content">내용</label>
+						<textarea rows="15" type="text" class="form-control"
+							name="b_writing" id="b_writing" placeholder="내용을 입력해 주세요"></textarea>
+
+						<a href="javascript:history.back()" class="btn btn-success"
+							style="float: right"> 취소 </a>
+						<button id="nextBtn" class="btn btn-success">저장</button>
+						<!-- </form> -->
+				</div>
+
+			</div>
+
+			<!-- /.card -->
+
+
+		</div>
+
+		<!-- /.card -->
+
+	</div>
+	<!-- /.col-lg-9 -->
+
+	</div>
+
+	</div>
+	<!-- /.container -->
+
+	<!-- Footer -->
+	<footer class="py-5 bg-dark">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your
+				Website 2020</p>
+		</div>
+		<!-- /.container -->
+	</footer>
+
+	<!-- Bootstrap core JavaScript -->
+	<script src="vendor/jquery/jquery.min.js"></script>
+	-->
+	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
+	<link rel="stylesheet" type="text/css" href="css/dd.css">
+	<script src="js/jquery.dd.min.js"></script>
+	<script language="javascript">
+		/* Select가 여러개 필요하면 각각 추가 하면 됨 */
+		/*
+		$(document).ready(function(e) {
+			try {
+				$("#p_productid").msDropDown();
+			} catch (e) {
+				alert(e.message);
+			}
+		});
+		 */
+	</script>
+</body>
+
+</html>

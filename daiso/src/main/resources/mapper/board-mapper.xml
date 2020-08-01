@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daiso.vo.BoardVO">
+
+	<insert id="boardInsert" parameterType="boardVO">
+		INSERT INTO board(b_num, b_title, b_writing, b_date, m_userid, p_productid)
+		VALUES(#{b_num}, #{b_title}, #{b_writing}, curdate(), #{m_userid}, #{p_productid})
+	</insert>
+ 
+	 
+	<select id="boardSelectOne" resultType="hashmap">
+		SELECT b_num, b_title, b_writing, b_date, m_userid, board.p_productid, p_img, p_price
+		FROM board,	product
+		WHERE board.p_productid = product.p_productid
+			  AND b_num=#{b_num};
+	</select>
+	 
+	 
+	<select id="boardSelectAll" resultType="hashmap">
+		SELECT b_num, b_title, b_writing, b_date, m_userid, board.p_productid, p_img, p_price
+		FROM board,	product
+		WHERE board.p_productid = product.p_productid;
+	</select>
+	
+
+	<delete id="boardDelete" parameterType="boardVO">
+		DELETE FROM board 
+		WHERE b_num=#{b_num};	
+	</delete>
+
+<!-- 
+	<resultMap type="hashmap" id="result">
+		<result property="b_num" javaType="java.lang.Integer"
+			column="b_num" jdbcType="INTEGER" />
+		<result property="b_title" javaType="java.lang.String"
+			column="b_title" jdbcType="VARCHAR" />
+		<result property="b_writing" javaType="java.lang.String"
+			column="b_writing" jdbcType="VARCHAR" />
+		<result property="b_date" javaType="java.util.Date"
+			column="b_date" jdbcType="DATE" />
+		<result property="m_userid" javaType="java.lang.String"
+			column="m_userid" jdbcType="VARCHAR" />
+		<result property="p_productid" javaType="java.lang.Integer"
+			column="board.p_productid" jdbcType="INTEGER" />
+		<result property="com.daiso.vo.ProductVO.p_img"
+			javaType="java.lang.String" column="p_img" jdbcType="VARCHAR" />
+		<result property="com.daiso.vo.ProductVO.p_price"
+			javaType="java.lang.Integer" column="p_price" jdbcType="INTEGER" />
+	</resultMap>
+  -->
+
+</mapper>
+
