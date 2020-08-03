@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns:th=" http://www.thymeleaf.org" />
+
+<head>
+
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+
+<title>Shop Item - Start Bootstrap Template</title>
+
+<!-- Bootstrap core CSS -->
+<link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}"
+	rel="stylesheet" type="text/css">
+
+<!-- Custom styles for this template -->
+<link th:href="@{/css/shop-item.css}" rel="stylesheet" type="text/css">
+<!-- Bootstrap core JavaScript -->
+
+<script type="text/javascript" th:src="@{/js/jquery-3.5.0.min.js}"></script>
+<script type="text/css"
+	th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+
+<script>
+	var b_num = location.href.split("/")[4];
+
+	function list() {
+		$
+				.ajax({
+					url : "/review/" + b_num,
+					type : "GET",
+					dataType : "JSON",
+					success : function(data) { //서버에서 받는 데이터
+						var list = data.list;
+						var a = "";
+						$
+								.each(
+										list,
+										function(key, value) {
+											var date = value.r_date
+											var sysdate = date.substring(0, 10)
+													.replace(/-/gi, "/");
+											a += "<div id="+ value.r_num +">"
+											a += "<p>" + value.r_comment
+													+ "</p>";
+											a += "<small class='text-muted'>"
+													+ value.m_userid + "  on  "
+													+ sysdate + "</small>";
+											a += "<div style='text-align: right;'>";
+											a += "<a class='btn btn-primary' id='review_update' onclick='update(this)'>수정</a>"
+											a += "<a class='btn btn-danger' id='review_delete' onclick='de(this)'>삭제</a>"
+											a += "</div>";
+											a += "</div>"
+											a += "<hr>";
+										})
+						$("#review").html(a);
+					},
+					error : function(request, status, error) {
+						/* alert("code = " + request.status);
+						alert("message = " + request.responseText);
+						alert("error = " + error); */
+					}
+				});
+	}
+
+	function create() {
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+
+		$.ajax({
+			url : "/review",
+			type : "POST",
+			data : JSON.stringify({ //서버로 보내는 데이터(json으로 보내는데, controller에서는 map으로 받음)
+				"r_comment" : $("#r_comment").val(),
+				"b_num" : b_num,
+			}),
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader(header, token);
+			},
+			contentType : "application/json; charset=UTF-8",
+			dataType : "json",
+			success : function(data) { //서버에서 받는 데이터
+				document.getElementById("r_comment").value = ''; /*$(#"r_comment").value='';*/
+				alert("댓글 입력성공");
+				list();
+			},
+			error : function(err) {
+				console.log(err);
+			}
+		});
+	}
+
+	function de(b) {
+		var r_num = b.parentNode.parentNode.getAttribute("id"); //a += "<div id="+ value.r_num +">"의 r_num갖고 오는 것
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		$.ajax({
+			url : "/review/" + r_num,
+			type : "DELETE",
+			dataType : "json",
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader(header, token);
+			},
+			success : function(data) { //서버로부터 받은 데이터
+				alert("삭제 되었습니다.")
+				list();
+			},
+			error : function(request, status, error) {
+				alert("code = " + request.status);
+				alert("message = " + request.responseText);
+				alert("error = " + error);
+			}
+		});
+	}
+	
+</script>
+
+<script>
+
+	var b_num = location.href.split("/")[4];
+
+	$(function() {
+
+		list(); // 먼저 list 보여주고
+
+		$("#boardupdatebtn").bind("click", function() {
+			window.location.href = '/update/' + b_num
+		});
+
+		$("#boarddeletebtn").click(function() {
+			window.location.href = '/delete/' + b_num
+		});
+		
+		$("#reviewcreatebtn").click(function() {
+			if (!$("#r_comment").val()) {
+				alert("댓글의 내용을 채워주세요");
+				$("#r_comment").focus();
+				return false;
+			}
+			create();	
+			list();
+		});
+
+		$("#prevbtn").click(function() {
+			/* var prev = parseInt(b_num) - 1
+			window.location.href = '/boarddetail/' + prev */
+			prev(b_num);
+		});
+
+		$("#nextbtn").click(function() {
+			/* var next = parseInt(b_num) + 1
+			window.location.href = '/boarddetail/' + next */
+			next(b_num);
+		});
+
+	});
+
+	//이전글 $("#preDoc").on("click",function(){ _this.preNextDoc('pre'); }); //다음글 $("#nxtDoc").on("click",function(){ _this.preNextDoc('next'); });
+</script>
+</head>
+
+<body>
+	<form id="logout" action="/logout" method="POST">
+		<input type="hidden" th:name="${_csrf.parameterName}"
+			th:value="${_csrf.token}" />
+	</form>
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+		<div class="container">
+			<a class="navbar-brand" href="/">Daiso Review Homepage</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarResponsive" aria-controls="navbarResponsive"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item active"><a class="nav-link" href="/">Home
+							<span class="sr-only">(current)</span>
+					</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{board}">Board</a>
+					<li class="nav-item" sec:authorize="!isAuthenticated()"><a
+						class="nav-link" th:href="@{/register}">회원가입</a></li>
+					<!-- 로그인이 되지 않은 경우 표시 -->
+					<li class="nav-item" sec:authorize="isAuthenticated()"><span
+						style="color: white; font-weight: bold display:inline-block; margin: 10px; padding: 5px"
+						sec:authentication="principal.username"></span></li>
+					<!-- 로그인 된 경우의 username을 출력 -->
+
+					<li sec:authorize="isAuthenticated()" class="nav-item"><a
+						class="nav-link"
+						onclick="document.getElementById('logout').submit();">Loout</a></li>
+				</ul>
+			</div>
+
+		</div>
+	</nav>
+
+	<!-- Page Content -->
+	<div class="container">
+
+		<div class="row">
+
+			<div class="col-lg-3">
+				<h1 class="my-4">Category</h1>
+				<div class="list-group">
+					<a href="#" class="list-group-item" id="prevbtn">이전글</a> <a
+						href="#" class="list-group-item" id="nextbtn">다음글</a> 
+						<!-- <a class="list-group-item" th:href="@{board}">목록보기</a>  -->
+						<a href="/board" class="list-group-item">목록보기</a> 
+						
+				</div>
+			</div>
+			<!-- /.col-lg-3 -->
+
+			<div class="col-lg-9">
+
+				<div class="card mt-4">
+					<img class="card-img-top img-fluid" th:src="'/' + ${datas.p_img}"
+						width="300" height="300">
+					<h4 th:text="'PRICE : ' + ${datas.p_price}"></h4>
+					<hr>
+					<div class="card-body">
+						<h5 th:text="'No. ' + ${datas.b_num}"></h5>
+						<divclass-"card-title">
+						<h4 th:text="'Title : ' + ${datas.b_title}"></h4>
+					</div>
+					<hr>
+					<h3>< 내용 ></h3>
+					<p th:text=" ${datas.b_writing}"></p>
+					<hr>
+					<small th:text="'UserID : ' + ${datas.m_userid}"></small><br /> <small
+						th:text=" ${datas.b_date}"> </small>
+				</div>
+				<!-- /.card -->
+
+				<div style="text-align: right;">
+					<br> 
+					<a id="boarddeletebtn" href="#" class="btn btn-danger">삭제</a>
+					<a id="boardupdatebtn" href="#" class="btn btn-success">수정</a>
+					</li>
+				</div>
+
+
+				<div class="card card-outline-secondary my-4">
+					<div class="card-header">댓글</div>
+					<div class="card-body">
+						<textarea id="r_comment" style="width: 780px" rows="3" cols="30"
+							name="comment" placeholder="댓글을 입력하세요"></textarea>
+						<small class="text-muted">Posted by Anonymous on 3/1/17
+							<div style="text-align: right;">
+								<a id="reviewcreatebtn" class="btn btn-info">등록</a>
+						</small>
+					</div>
+					<hr>
+				</div>
+
+				<div class="card card-outline-secondary my-4">
+					<div class="card-header">Product Reviews</div>
+					<div class="card-body" id="review">
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+							Omnis et enim aperiam inventore, similique necessitatibus neque
+							non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum.
+							Sequi mollitia, necessitatibus quae sint natus.</p>
+						<small class="text-muted">Posted by Anonymous on 3/1/17</small>
+						<hr>
+					</div>
+				</div>
+
+
+			</div>
+			<!-- /.card -->
+
+		</div>
+		<!-- /.col-lg-9 -->
+
+	</div>
+
+	</div>
+	<!-- /.container -->
+
+	<!-- Footer -->
+	<footer class="py-5 bg-dark">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your
+				Website 2020</p>
+		</div>
+		<!-- /.container -->
+	</footer>
+
+</body>
+
+</html>
+
+
+
+
+
+
